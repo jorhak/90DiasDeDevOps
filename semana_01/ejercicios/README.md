@@ -1,4 +1,4 @@
-# Dia 1
+# Dia 1/90
 ## Que es DevOps❔
  Es la colaboracion de los equipos de desarrollo y operaciones que nos permite colaborar, compartir y automatizar las tareas repetitivas.
  DevOps es una cultura que busca las mejores practicas en desarrollo de software y en las operaciones para su despliegue.
@@ -60,3 +60,64 @@ __¿Cuánta memoria disponible tenés?__
 ### Ejecucion
 ![Screenshot comandos](recursos/images/dia1.png)
 ![Screenshot desafio](recursos/images/desafio1.png)
+
+# Dia 2/90
+
+# 🖥️Comandos
+
+Muestra el usuario con el que ingreso.
+```
+whoami
+```
+
+Muestra el directorio donde se encuentra en ese momento.
+```
+pwd
+```
+
+Muestra una lista de los ficheros y directorios del directorio de donde se ejecuto el comando, con el formato que lo muestra todo, muestra los directorios ocultos y en formato que sea legible para los humanos. 
+```
+ls -lah
+```
+
+Muestra en una lista todas las particiones, en formato que sea legible para los humanos y el tipo de particion. 
+```
+df -hT
+```
+
+Muestra la hora actual, hace cuanto fue encendido el equipo, los usuarios y el promedio de encendido.
+```
+uptime
+```
+
+Nos cambia de directorio actual al directorio __/__ (raiz)
+```
+cd /
+```
+
+Muestra en una lista los ficheros y directorios del directorio donde se encuentra. Solo muestra los nombres no es como el anterior comando que mostraba mas caracteristicas.
+```
+ls
+```
+
+Es la combinacion de los dos comandos previos, nos cambiamos al directorio __/etc__ y mostramos los ficheros y directorios de __/etc__.
+```
+cd /etc && ls
+```
+
+Hace lo mismo que el comando anterior solo que en esta ocacion nos dirigimos al directorio __/home__ y mostramos los ficheros y directorios de __/home__.
+```
+cd /home && ls
+```
+
+### 🎯Reto de comprension
+
+__¿Qué hace este comando?__
+```
+chmod u=rwx,g=rx,o= hola.txt
+```
+
+Le esta cambiando los permisos:
+- Al __usuario__ le esta dando todos los permisos: lectura, escritura y ejecucion.
+- Al __grupo__ le da los permisos de lectura y ejecucion.
+- A __otros__ no le da ningun permiso.
