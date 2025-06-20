@@ -1,0 +1,25 @@
+Bringing machine 'default' up with 'virtualbox' provider...
+==> default: Box 'ubuntu/jammy64' could not be found. Attempting to find and install...
+    default: Box Provider: virtualbox
+    default: Box Version: >= 0
+==> default: Loading metadata for box 'ubuntu/jammy64'
+    default: URL: https://vagrantcloud.com/api/v2/vagrant/ubuntu/jammy64
+==> default: Adding box 'ubuntu/jammy64' (v20241002.0.0) for provider: virtualbox
+    default: Downloading: https://vagrantcloud.com/ubuntu/boxes/jammy64/versions/20241002.0.0/providers/virtualbox/unknown/vagrant.box
+==> default: Successfully added box 'ubuntu/jammy64' (v20241002.0.0) for 'virtualbox'!
+==> default: Importing base box 'ubuntu/jammy64'...
+==> default: Matching MAC address for NAT networking...
+==> default: Checking if box 'ubuntu/jammy64' version '20241002.0.0' is up to date...
+==> default: Setting the name of the VM: vagrant-01_default_1750429764771_14070
+==> default: Clearing any previously set network interfaces...
+The IP address configured for the host-only network is not within the
+allowed ranges. Please update the address used to be within the allowed
+ranges and run the command again.
+
+  Address: 192.168.33.10
+  Ranges: 192.168.56.0/21, fe80::/10
+
+Valid ranges can be modified in the /etc/vbox/networks.conf file. For
+more information including valid format see:
+
+  https://www.virtualbox.org/manual/ch06.html#network_hostonly
