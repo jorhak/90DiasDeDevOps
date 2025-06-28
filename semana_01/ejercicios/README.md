@@ -205,9 +205,9 @@ El primer comando __--amend -n__ cambia el ultimo commit. Debemos tener en cuent
 
 El segundo comando __rebase -i HEAD~3__ lo que hace este comando es abrir el editor y debemos reemplazar pick por: reword, edit, squash, drop.
 
-Dia 5/90
+# Dia 5/90
 
-# Automatizá el Despliegue de la Aplicación Flask 📚"Book Library"📚 con Nginx y Gunicorn
+## Automatizá el Despliegue de la Aplicación Flask 📚"Book Library"📚 con Nginx y Gunicorn
 
 Para la ejecucion de esta App se debe ejecutar:
 ```
@@ -225,7 +225,7 @@ chmod o+rx /home/<user>
 
 Ahora debe ir a su navegador y escribir su IP.
 
-# 🚀 Desafío: Despliegue de Aplicaciones con PM2
+## 🚀 Desafío: Despliegue de Aplicaciones con PM2
 
 Para le ejecucion de esta App se debe ejecutar:
 ```
