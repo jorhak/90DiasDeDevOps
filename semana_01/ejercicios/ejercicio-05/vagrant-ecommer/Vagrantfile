@@ -1,0 +1,8 @@
+Vagrant.configure("2") do |config|
+  # Usa una imagen ligera de Ubuntu 22.04
+  config.vm.box = "ubuntu/jammy64"
+  # Configuración de red (accesible via IP)
+  config.vm.network "private_network", ip: "192.168.56.34"
+  # Cambiar hostname
+  config.vm.hostname = "jorhak"
+end

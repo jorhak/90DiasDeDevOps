@@ -204,3 +204,43 @@ Eso si ya no tiene el historial (.git).
 El primer comando __--amend -n__ cambia el ultimo commit. Debemos tener en cuenta si este ya fue pusheado debemos forzar el push para que se actualice en GitHub.
 
 El segundo comando __rebase -i HEAD~3__ lo que hace este comando es abrir el editor y debemos reemplazar pick por: reword, edit, squash, drop.
+
+Dia 5/90
+
+# Automatizá el Despliegue de la Aplicación Flask 📚"Book Library"📚 con Nginx y Gunicorn
+
+Para la ejecucion de esta App se debe ejecutar:
+```
+chmod +x desplegar_app.sh
+./desplegar_app.sh
+```
+
+Cabe recalcar que hubo un problema de permisos ya que 
+lo estamos ejecutando desde la ruta donde se encuentra 
+la aplicacion web es por eso que se debio dar permiso
+al directorio
+```
+chmod o+rx /home/<user>
+```
+
+Ahora debe ir a su navegador y escribir su IP.
+
+# 🚀 Desafío: Despliegue de Aplicaciones con PM2
+
+Para le ejecucion de esta App se debe ejecutar:
+```
+chmod +x node_pm2.sh
+./node_pm2.sh
+```
+
+Cuando termine de ejecurase debemos cerrar la terminal y
+volver a abrila de esta manera ya vamos a poder ejecuar los comandos:
+```
+nvm -v
+node -v
+npm -v
+npx -v
+pm2 -v
+```
+
+Ahora debe ir a su navegador y escribir su IP.
