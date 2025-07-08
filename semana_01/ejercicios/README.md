@@ -66,46 +66,55 @@ __¿Cuánta memoria disponible tenés?__
 # 🖥️Comandos
 
 Muestra el usuario con el que ingreso.
+
 ```
 whoami
 ```
 
 Muestra el directorio donde se encuentra en ese momento.
+
 ```
 pwd
 ```
 
-Muestra una lista de los ficheros y directorios del directorio de donde se ejecuto el comando, con el formato que lo muestra todo, muestra los directorios ocultos y en formato que sea legible para los humanos. 
+Muestra una lista de los ficheros y directorios del directorio de donde se ejecuto el comando, con el formato que lo muestra todo, muestra los directorios ocultos y en formato que sea legible para los humanos.
+
 ```
 ls -lah
 ```
 
-Muestra en una lista todas las particiones, en formato que sea legible para los humanos y el tipo de particion. 
+Muestra en una lista todas las particiones, en formato que sea legible para los humanos y el tipo de particion.
+
 ```
 df -hT
 ```
 
 Muestra la hora actual, hace cuanto fue encendido el equipo, los usuarios y el promedio de encendido.
+
 ```
 uptime
 ```
 
 Nos cambia de directorio actual al directorio __/__ (raiz)
+
 ```
 cd /
 ```
 
 Muestra en una lista los ficheros y directorios del directorio donde se encuentra. Solo muestra los nombres no es como el anterior comando que mostraba mas caracteristicas.
+
 ```
 ls
 ```
 
 Es la combinacion de los dos comandos previos, nos cambiamos al directorio __/etc__ y mostramos los ficheros y directorios de __/etc__.
+
 ```
 cd /etc && ls
 ```
 
 Hace lo mismo que el comando anterior solo que en esta ocacion nos dirigimos al directorio __/home__ y mostramos los ficheros y directorios de __/home__.
+
 ```
 cd /home && ls
 ```
@@ -113,6 +122,7 @@ cd /home && ls
 ### 🎯Reto de comprension
 
 __¿Qué hace este comando?__
+
 ```
 chmod u=rwx,g=rx,o= hola.txt
 ```
@@ -130,9 +140,9 @@ facilitando el despliegue de nuestra arquitectura y las dependencias que son
 requeridas para nuestro laboratorio.
 
 ### Posibles errores
-1. Uno de los posibles errors es que no tengamos habilitado VM en la Bios.
+1. Uno de los posibles errors es que no tengamos habilitado VM en la Bios.\
    __Solucion__: Entrar a la Bios y habilitar la VM
-2. Es el rango de las IP
+2. Es el rango de las IP\
    __Solucion__: Cambiar el rango de IP
 
 # Dia 4/90
@@ -152,7 +162,7 @@ ssh-add ~/.ssh/id_MI_LLAVE_PRIVADA
 id_MI_LLAVE_PRIVADA es la que crea para poder conectarme a la plataforma GitHub.
 
 ### Ejercicio 2
-Realizamos un __fork__ al repositorio de Roxs y los sincronizamos.
+Realizamos un __fork__ al repositorio de Roxs y los sincronizamos.\
 Nos creamos una rama y agregamos un fichero luego lo comiteamos y finalmente
 le hicimos un merge en la rama main y borramos la rama tanto en local como de la
 plataforma.
@@ -210,6 +220,7 @@ El segundo comando __rebase -i HEAD~3__ lo que hace este comando es abrir el edi
 ## Automatizá el Despliegue de la Aplicación Flask 📚"Book Library"📚 con Nginx y Gunicorn
 
 Para la ejecucion de esta App se debe ejecutar:
+
 ```
 chmod +x desplegar_app.sh
 ./desplegar_app.sh
@@ -219,6 +230,7 @@ Cabe recalcar que hubo un problema de permisos ya que
 lo estamos ejecutando desde la ruta donde se encuentra 
 la aplicacion web es por eso que se debio dar permiso
 al directorio
+
 ```
 chmod o+rx /home/<user>
 ```
@@ -250,7 +262,7 @@ Ahora debe ir a su navegador y escribir su IP.
 ## 📌 Tarea Práctica
 
 Requisitos
-1. Tener u servidor 
+1. Tener un servidor 
 2. Equipo local
 
 El equipo local viene a ser nuestra maquina que tiene instalado Ansible y el servidor es al que le vamos hacer la configuracion y/o instalacion de dependencias.
@@ -328,11 +340,11 @@ ssh -p 4455 simon@192.168.56.35
 Y estamos en el servidor a traves de las llaves que generamos.
 Hasta aqui ya tenemos la mitad de nuestra tarea practica.
 
-### Ejecuat playbook.yml
+### Ejecutar playbook.yml
 Al momento de ejecuar el playbook.yml tube un inconveniente que era que necesitaba la contrasena del usuario para ejecutar los comando en donde se necesitaba el permiso de **sudo**, para resolver este inconveniente agrege la contrasena del usuario a vault para que tomo la contrasena desde ahi y no tener este incoveniente.
 
 #### Creacion de vault
-Vamos crear un boveda para nuestra contrasena de usuario del servidor para que pueda ejecutar los comandos con privilegios de **sudo**.
+Vamos crear un boveda para nuestra contrasena de usuario del servidor y pueda ejecutar los comandos con privilegios de **sudo**.
 
 ```
 ansible-vault create ~/.ansible/vault_pass.yml
@@ -382,9 +394,9 @@ Aqui cabe mencionar algo curioso en el anterior ejercicio tenemos _inventory_ qu
 ### Cosas nuevas
 Algo curioso que note es que ya existe estructuras definidas para que escenario posible y si no lo conoces simplemente utilizas el modulo _shell_.
 
-1. En la tarea **Limpiar archivos temporales**
+1. En la tarea **Limpiar archivos temporales** \
    Aqui no entendia el {{ item }}, sin embargo en _loop_ es de donde saca {{ item }} recorre el _loop_ y que en _state: absent_ esto significa eliminar.
-2. Handlers y Notify
+2. Handlers y Notify \
    Estos dos trabajan juntos, esto es mas o menos como una funcion en donde si _notify: Restart Nginx_ se va a ejecutar la tarea del _handlers_ que tenga ese nombre.
 
 Para la ejecucion solo segui los pasos que se tenia.
