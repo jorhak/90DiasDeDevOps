@@ -1,0 +1,39 @@
+---
+- name: Instalar Nginx
+  apt:
+    name: ["nginx"]
+    state: present
+    update_cache: yes
+
+- name: Configurar Nginx
+  template:
+    src: ../files/nginx.conf
+    dest: /etc/nginx/sites-available/landing_page
+  notify: Restart Nginx
+
+- name: Habilitar sitio de Nginx
+  file:
+    src: /etc/nginx/sites-available/landing_page
+    dest: /etc/nginx/sites-enabled/landing_page
+    state: link
+  notify: Restart Nginx
+
+- name: Eliminar sitio por defecto de Nginx
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Restart Nginx
+
+- name: Copiar contenido de la página de inicio
+  copy:
+    src: ../files/index.html
+    dest: /var/www/html/index.html
+
+- name: Asegurar permisos del directorio web
+  file: 
+    path: "{{ nginx_web_root }}"
+    owner: www-data
+    group: www-data
+    mode: '0755'
+    state: directory
+  notify: Restart Nginx

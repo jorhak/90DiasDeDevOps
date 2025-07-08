@@ -1,0 +1,24 @@
+---
+- name: Instalacion de Nginx y mostrar pagiana personalizada
+  hosts: webservers
+  become: yes
+  vars_files:
+    - ~/.ansible/vault_pass.yml # Ruta a tu archivo de bóveda
+
+  tasks:
+    - name: Instalar Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Pagina personalizada
+      copy:
+        src: ../files/index.html
+        dest: /var/www/html
+
+    - name: Habilitar Firewall
+      ufw:
+        rule: allow
+        port: "80"
+        proto: tcp
