@@ -244,3 +244,214 @@ pm2 -v
 ```
 
 Ahora debe ir a su navegador y escribir su IP.
+
+# Dia 6/90
+
+## 📌 Tarea Práctica
+
+Requisitos
+1. Tener u servidor 
+2. Equipo local
+
+El equipo local viene a ser nuestra maquina que tiene instalado Ansible y el servidor es al que le vamos hacer la configuracion y/o instalacion de dependencias.
+En el equipo local debemos crear las llaves publicas y privadas.
+El servidor tiene como usuario: simon y una contrasena:123.
+
+### Crear llaves para SSH
+Cuando se crean las llaves para SSH se crean dos: llave privada y llave publica.
+
+```
+ssh-keygen -t rsa -b 4096
+```
+
+Damos Enter y nos preguntara en donde lo deseamos guardar por defecto lo hace en ~/.ssh/, sin embargo podemos elegir cambiar el lugar. Nosotros para fines practicos lo vamos a guardar de la siguiente manera:
+
+```
+/home/$USER/.ssh/id_<nombre_descriptivo>
+```
+
+### Copiar llave publica al servidor
+Nosotros no hemos hecho ningun tipo de configuracion en el servidor para SSH.
+Por primera ves vamos a ingresar con el usuario y contrasena. 
+Una ves terminada la configuracion vamos acceder por las llaves.
+
+```
+ssh simon@192.168.56.35
+```
+
+Abrimos otra terminal y vamos a copiar la llave publica en el servidor
+
+```
+ssh-copy-id -i ~/.ssh/id_<nombre_descriptivo>.pub simon@192.168.56.35
+```
+
+### Configurar Servidor para acceder por llaves publicas
+Como ya ingresamos previamente con el usuario y la contrasena vamos a editar el fichero /etc/ssh/sshd_config.
+Antes vamos a sacar un backup de este fichero.
+
+```
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.backup
+```
+
+Ahora vamos a editar el fichero 
+
+```
+sudo nano /etc/ssh/sshd_config
+```
+
+Y debe tener descomentada estas lineas
+
+```
+Port 4455
+PasswordAuthentication no
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+PermitRootLogin no
+```
+
+Guardamos y salimos del servidor.
+
+### Reiniciar servicio SSH
+
+```
+sudo systemctl status ssh
+sudo systemctl restart ssh
+```
+
+### Verificar acceso
+Ahora vamos a ingresar como lo hicimos previamente solo que esta vez no nos pedira la contrasena. Esto lo hacemos desde nuestro equipo local.
+
+```
+ssh -p 4455 simon@192.168.56.35
+```
+
+Y estamos en el servidor a traves de las llaves que generamos.
+Hasta aqui ya tenemos la mitad de nuestra tarea practica.
+
+### Ejecuat playbook.yml
+Al momento de ejecuar el playbook.yml tube un inconveniente que era que necesitaba la contrasena del usuario para ejecutar los comando en donde se necesitaba el permiso de **sudo**, para resolver este inconveniente agrege la contrasena del usuario a vault para que tomo la contrasena desde ahi y no tener este incoveniente.
+
+#### Creacion de vault
+Vamos crear un boveda para nuestra contrasena de usuario del servidor para que pueda ejecutar los comandos con privilegios de **sudo**.
+
+```
+ansible-vault create ~/.ansible/vault_pass.yml
+```
+
+Ahora nos va pedir que ingresemos una contrasena para esta boveda. Y dentro vamos a agregar:
+
+```
+ansible_sudo_pass: contrasena_usuario_simon
+```
+
+### Agregar variables desde la boveda
+Vamos a agregar en nuestro playbook.yml el fichero que contiene la contrasena:
+
+```
+---
+- name: Instalacion de Nginx y mostrar pagiana personalizada
+  hosts: webservers
+  become: yes
+  vars_files:
+    - ~/.ansible/vault_pass.yml # Ruta a tu archivo de bóveda
+```
+
+De esta forma ya no vamos a tener problemas con ejecutar los comandos que requieren permisos de **sudo**.
+
+### Ejecutar playbook.yml
+Ahora vamos a ejecutar el **playbook.yml** al que le vamos agregar un flag en el comando:
+
+```
+ansible-playbook playbook/playbook.yml --ask-vault-pass
+```
+
+Nos va pedir la contrasena de la boveda.
+De esta forma ya tenemos terminada la **Tarea practica**.
+
+
+## 🚀 Desplegando StartBootstrap Freelancer con Vagrant y Ansible
+Aqui cabe mencionar algo curioso en el anterior ejercicio tenemos _inventory_ que son los diferentes ambientes en donde vamos a ejecutar las configuracion y/o instalacion de dependencias. Aqui en este ejercicio no aplica este concepto ya que le estamos pasando la configuracion para que se ejecute en esta **VM** de **Vagrant**. En el fichero playbook.yml solo basta que tenga:
+
+```
+---
+- name: Despliegue Fullstack Freelancer
+  hosts: all  ### Con esto no vamos a tener problemas
+  become: yes
+```
+
+### Cosas nuevas
+Algo curioso que note es que ya existe estructuras definidas para que escenario posible y si no lo conoces simplemente utilizas el modulo _shell_.
+
+1. En la tarea **Limpiar archivos temporales**
+   Aqui no entendia el {{ item }}, sin embargo en _loop_ es de donde saca {{ item }} recorre el _loop_ y que en _state: absent_ esto significa eliminar.
+2. Handlers y Notify
+   Estos dos trabajan juntos, esto es mas o menos como una funcion en donde si _notify: Restart Nginx_ se va a ejecutar la tarea del _handlers_ que tenga ese nombre.
+
+Para la ejecucion solo segui los pasos que se tenia.
+
+## 🚀 Desafío Ansible - Día 6
+Para este desafio intente utilizar _inventory_ en donde coloque:
+
+inventories/develop/hosts
+```
+[webservers]
+127.0.0.1 ansible_user=vagrant ansible_port=2222 ansible_ssh_private_key_file=../../vagrant/machines/default/virtualbox/private_key
+```
+
+playbook/playbook.yml
+```
+---
+- name: Instalacion de Nginx y mostrar pagina personalizada
+  hosts: webservers
+  become: yes
+```
+
+Pero nada de esto funciono tube que dejarlo como en el anterior ejercicio
+
+```
+---
+- name: Instalacion de Nginx y mostrar pagina personalizada
+  hosts: all
+  become: yes
+```
+
+De esta manera ya no tenia errores.
+
+### Roles
+Los _roles_ son mas o menos como funciones que indican que tareas se van a ejecutar y estas son llamadas en el _playbook.yml_ 
+
+### Crear Roles
+Al inicio yo cree los directorios, sin embargo, estos al momento de llamarlos en el _playbook.yml_ estos no eran encontrados voy a mostrar las dos formas: Mal y Bien.
+
+Mal
+```
+  roles:
+    - devops
+    - firewall
+    - nginx
+```
+
+Bien
+```
+  roles:
+    - roles/devops
+    - roles/firewall
+    - roles/nginx
+```
+
+Ahora si ya me los encontraba, cabe mencionar que tube que ejecutar los comandos para su creacion y no tener duda alguna.
+
+```
+ansible-galaxy init roles/devops
+ansible-galaxy init roles/firewall
+ansible-galaxy init roles/nginx
+```
+
+Cabe mencionar que se debe tener mucho cuidado con el formato de fichero _.yml_ ya que por esto tuve varios errores.
+
+Una ves teniendo todo esto procedemos a la ejecucion con **Vagrant**, esto lo hacemos como en el anterior ejercicio.
+
+```
+vagrant up
+```
+
