@@ -467,3 +467,84 @@ Una ves teniendo todo esto procedemos a la ejecucion con **Vagrant**, esto lo ha
 vagrant up
 ```
 
+## 🚀 Desafio final semana 1 - Dia 7
+
+Tenemos una aplicacion de votos en donde se eligen gatos o perros. Los cuales estan utilizando: python, node, redis, postgres.
+
+Para la infraestructura y las politicas utilizamos Vagrant y Ansible respectivament.
+
+Una vez tenemos la infraestructura y las dependencias:
+
+```
+vagrant up
+```
+
+Debemos acceder
+
+```
+vagrant ssh
+```
+
+Una ves dentro nos dirigimos donde tenemos clonado el repositorio
+
+```
+cd /opt/project90/roxs-voting-app
+```
+
+Desde aqui nos vamos a dirigir a tres rutas
+1. result
+2. vote
+3. worker
+
+### 🛠️ Crear base de datos
+Como ya tenemos todas las dependencias lo primero que debemos hacer es crear la base de datos
+
+```
+sudo -i -u postgres
+psql
+alter role postgres with password 'contrasena' ;
+create database votes ;
+```
+
+Con esto ya tenemos creada nuestra base de datos.
+
+### 🛠️ Result y Worker
+Los servicios que debemos levantar primero son: *result* y *worker*.
+En *worker* debemos cambiar el puerto a 3001.
+Y en ambos (result, worker) debemos cambiar el *host* de la base de datos y de redis por **localhost**.
+
+result
+```
+cd result
+npm install
+npm start
+```
+
+worker
+```
+cd ../worker
+npm install
+npm start
+```
+
+Ahora tenemos levantados a nuestros dos servicios. Para validar que se estan ejecutando correctamente nos fijamos en los logs o en todo caso desde el navegador:
+
+worker >>>> 192.168.45.23:3001/healthz \
+result >>>> 192.168.45.23:3000/healthz
+
+### 🛠️ Vote
+Vamos a levantar la pagina web en donde vamos a elegir un gato o un perro.
+
+```
+cd ../vote
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+python app.py
+```
+
+Vamos a validar que la aplicacion se este ejecutando correctamente para ello vamos al navegador:
+
+vote >>>> 192.168.45.23/healthz
+
+Hemos finalizado nuestro reto ✅✅✅✅.

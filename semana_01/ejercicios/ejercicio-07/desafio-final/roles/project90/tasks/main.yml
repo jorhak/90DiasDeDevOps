@@ -1,0 +1,24 @@
+---
+# tasks file for roles/project90
+- name: Instalar dependencias
+  apt:
+    name: [ "git", "python3-venv", "python3-pip" ]
+    state: present
+    update_cache: yes
+
+- name: Clonar repositorio
+  git:
+    repo: "{{ url_repo }}"
+    dest: "/opt/project90"
+    force: yes
+    version: "master"
+
+- name: Cambiar permisos del directorio
+  file:
+    path: "/opt/project90"
+    owner: "vagrant"
+    group: "vagrant"
+    recurse: yes
+    state: directory
+    mode: "0755"
+

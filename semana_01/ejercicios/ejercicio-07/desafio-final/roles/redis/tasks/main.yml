@@ -1,0 +1,13 @@
+---
+# tasks file for roles/redis
+- name: Instalar Redis
+  apt:
+    name: redis
+    state: present
+    update_cache: yes
+
+- name: Habilitar y arrancar Redis
+  service:
+    name: redis-server
+    enabled: yes
+    state: started

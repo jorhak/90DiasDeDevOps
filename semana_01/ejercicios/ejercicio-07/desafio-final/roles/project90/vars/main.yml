@@ -1,0 +1,6 @@
+---
+# vars file for roles/project90
+url_repo: "https://github.com/roxsross/roxs-devops-project90.git"
+dir_vote: "/opt/project90/roxs-voting-app/vote"
+dir_result: "/opt/project90/roxs-voting-app/result"
+dir_worker: "/opt/project90/roxs-voting-app/worker"

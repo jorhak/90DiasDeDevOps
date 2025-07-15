@@ -1,0 +1,21 @@
+---
+- name: Instalar Curl
+  apt:
+    name: curl
+    state: present
+    update_cache: yes
+
+- name: Instalar NVM y NodeJS
+  shell: |
+    curl -o- {{ url_nvm_install }} | bash
+    \. "$HOME/.nvm/nvm.sh"
+    nvm install 22
+    node -v
+    nvm current
+    npm -v
+  args:
+    executable: /bin/bash
+    chdir: /home/vagrant
+  become: false
+  environment:
+    HOME: /home/vagrant
