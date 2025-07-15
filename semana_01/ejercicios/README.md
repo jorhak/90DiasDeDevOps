@@ -159,7 +159,7 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_MI_LLAVE_PRIVADA
 ```
 
-id_MI_LLAVE_PRIVADA es la que crea para poder conectarme a la plataforma GitHub.
+id_MI_LLAVE_PRIVADA es la que cree para poder conectarme a la plataforma GitHub.
 
 ### Ejercicio 2
 Realizamos un __fork__ al repositorio de Roxs y los sincronizamos.\
@@ -401,7 +401,7 @@ Algo curioso que note es que ya existe estructuras definidas para que escenario 
 
 Para la ejecucion solo segui los pasos que se tenia.
 
-## 🚀 Desafío Ansible - Día 6
+## 🚀 Día 6/90 - Desafío Ansible 
 Para este desafio intente utilizar _inventory_ en donde coloque:
 
 inventories/develop/hosts
@@ -467,7 +467,7 @@ Una ves teniendo todo esto procedemos a la ejecucion con **Vagrant**, esto lo ha
 vagrant up
 ```
 
-## 🚀 Desafio final semana 1 - Dia 7
+## 🚀 Dia 7/90 - Desafio final semana 1
 
 Tenemos una aplicacion de votos en donde se eligen gatos o perros. Los cuales estan utilizando: python, node, redis, postgres.
 
