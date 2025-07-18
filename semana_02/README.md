@@ -267,3 +267,117 @@ RUN yarn run build
 FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 ```
+
+# Dia 9/90
+
+## Verificar que Docker esta instalado
+```
+docker --version
+```
+
+## Descargar una imagen
+```
+docker pull hello-world
+```
+
+## Ejecutar contenedor
+```
+docker run hello-world
+```
+
+## Levantar servidor web Nginx
+Vamos a tomar este contenedor como ejemplo para los siguientes comandos
+
+### Descargar la imagen
+```
+docker pull nginx
+```
+
+### Ejecutar contenedor con Nginx
+```
+docker run -d -p 8080:80 --name web-nginx nginx
+```
+
+### Veriricar que  se esta ejecutando
+Vamos a nuestro navegador y escribimos localhost o 127.0.0.1
+
+## Comandos
+Comandos para gestinar un contenedor
+
+### Listar contenedores en ejecucion
+```
+docker ps
+```
+
+### Listar contenedores en activos e inactivos
+```
+docker ps -a
+```
+
+### Detener contenedor
+```
+docker stop web-nginx
+```
+
+### Eliminar contenedor
+```
+docker rm web-nginx
+```
+
+### Eliminar todos los contenedores inactivos
+```
+docker container prune
+```
+
+## Contenedores interactivos
+Vamos a crear un contenedor y vamos a observar su comportamiento
+
+### Crear contenedor como imagen base ubuntu
+```
+docker run -it --name contenedor1 ubuntu bash
+```
+
+**-it**: Nos permite interactuar con el contenedor desde la terminal. \
+**--name**: Le asignamos un nombre el contenedor. \
+**bash**: Como podemos interactuar desde la terminal con esto le especificamos que utilice la shell bash.
+
+Para salir del modo interactivo escribimos _exit_.
+De esta manera el contenedor va entrar al estado de inactivo para que se encuentre activo de nuevo ejecutamos
+```
+docker start contenedor1
+```
+
+Podemos ejecutar comandos sin entrar al contenedor
+```
+docker exec contenedor ls -la
+```
+
+Una vez activo podemos ingresar al contenedor con
+```
+docker attach contenedor1
+```
+
+### Inspeccionar contenedor
+Nos va mostrar la informacion del contenedor en formato json
+```
+docker inspect contenedor1 
+```
+
+### Explorar el historial una imagen
+Esto nos mostrara la cantidad de capas que tiene la imagen, esto quiere decir, que nos va mostrar las capas que se necesitaron para crear la imagen.
+
+```
+docker history nginx
+```
+
+### Copiar del host al contenedor
+Primero vamos a levantar nuestro contenedor nginx para fines practicos. Lo que hace el comando es copiar todo lo que hay dentro de **hola/** en el directorio **/var/share/nginx/html/** del contenedor.
+```
+docker cp hola/. web-ngix:/var/share/nginx/html/
+```
+
+### Copiar del contenedor al host
+Vamos a suponer que nos encontramos en el directorio **hola/**. Lo cual vamos a copiar index.html en hola/
+```
+docker cp web-nginx:/var/share/nginx/html/index.html .
+```
