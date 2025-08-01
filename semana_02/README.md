@@ -381,3 +381,99 @@ Vamos a suponer que nos encontramos en el directorio **hola/**. Lo cual vamos a 
 ```
 docker cp web-nginx:/var/share/nginx/html/index.html .
 ```
+
+Dia 10/90
+
+## Ejecutar en segundo plano
+```
+docker run -d --name contenedor ubuntu bash -c "while true; do echo hello world; sleep 1; done"
+```
+
+- -d: nos permite que se ejecute en segundo plano
+- --name: le da un nombre al contenedor
+- bash -c: lo que viene luego que nos permite que se ejecuten comandos dentro del contenedor.
+
+## Ver que se esta ejecutando el contenedor
+Nos muestra todos los contenedores que se estan ejecutando.
+```
+docker ps
+```
+
+## Ver los logs del contenedor
+```
+docker logs contenedor
+```
+
+## Detener y eliminar el contenedor
+No podemos eliminar directamente el contenedor sin antes detenerlo
+```
+docker stop contenedor
+docker rm contenedor
+```
+
+## Eliminar contenedor forzosamente
+Eliminamos el contenedor sin detenerlo forzamos su eliminacion
+```
+docker rm -f contenedor
+```
+
+## Copiar del host al contenedor
+```
+docker cp texto.txt contenedor:/tmp
+```
+
+## Copiar del contenedor al host
+```
+docker cp contenedor:/home/root/mi_texto.txt .
+```
+El punto **.** indica que va copiarlo en donde nos encontremos ubicados en ese momento.
+
+## Ver los procesos que se estan ejecutando dentro del contenedor
+```
+docker top contenedor
+```
+
+## Inspeccionar contenedor
+```
+docker inspect contenedor
+```
+
+Tambien podemos filtar lo que nos de el **inspect**
+
+### ID container
+```
+docker inspect --format='{{.Id}}' hora-container2
+```
+
+### Imagen usada
+```
+docker inspect --format='{{.Config.Image}}' hora-container2
+```
+
+### Variables de entorno
+```
+docker container inspect -f '{{range .Config.Env}}{{println .}}{{end}}' hora-container2
+```
+
+### Comando ejecutado
+```
+docker inspect --format='{{range .Config.Cmd}}{{println .}}{{end}}' hora-container2
+```
+
+### IP asignada
+```
+docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' hora-container2
+```
+
+## Varialbes de entorno
+```
+docker run -it --name prueba -e USUARIO=prueba ubuntu bash
+echo $USUARIO
+```
+
+Para ver como agregar las variables de entorno de MySQL o MariaDB debemos fijarmos en la documentacion de [Docker Hub](https://hub.docker.com/_/mysql)
+```
+docker run -d -p 3306:3306 --name some-mariadb -e MARIADB_ROOT_PASSWORD=my-secret-pw mariadb
+```
+
+
