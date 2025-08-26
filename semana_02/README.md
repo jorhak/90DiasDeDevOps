@@ -382,7 +382,7 @@ Vamos a suponer que nos encontramos en el directorio **hola/**. Lo cual vamos a 
 docker cp web-nginx:/var/share/nginx/html/index.html .
 ```
 
-Dia 10/90
+# Dia 10/90
 
 ## Ejecutar en segundo plano
 ```
@@ -476,4 +476,103 @@ Para ver como agregar las variables de entorno de MySQL o MariaDB debemos fijarm
 docker run -d -p 3306:3306 --name some-mariadb -e MARIADB_ROOT_PASSWORD=my-secret-pw mariadb
 ```
 
+# Dia 11/90
 
+## Listar las redes
+```
+docker network ls
+```
+
+## Crear y utilizar la red personalizada
+```
+docker network create mi-red
+docker run -d --name backend --network mi-red alpine sleep 3600
+docker run -it --rm --network mi-red alpine ping backend
+```
+
+## Inspeccionar y eliminar redes
+```
+docker network inspect mi-red
+docker network rm mi-red
+```
+
+## Crear y utilizar un volumen
+```
+docker volume create datos-app
+docker run -d --name contenedor-volume -v datos-app:/datos alpine sh -c "whiele true; do date >> datos/fechas.log; sleep 5; done"
+docker exec contenedor-volume cat /datos/fechas.log
+```
+
+## Ver volumenes
+```
+docker volume ls
+```
+
+## Eliminar volumen
+```
+docker volume rm datos-app
+```
+
+## Bind Mounts
+```
+mkdir compartir
+docker run -it --name con-mount -v $(pwd)/compartir:/datos alpine sh 
+```
+
+## Reto
+### Crear red
+```
+docker network create miapp-net
+```
+
+### Crear volumen
+```
+docker volume create vol-db
+```
+
+### Crear DB
+```
+docker run -it --name db \
+-e MYSQL_ROOT_PASSWORD=1234 \
+-v vol-db:/datos \
+--network miapp-net \
+mysql bash
+```
+
+### Crear API
+```
+docker run -it --rm --name api \
+--network miapp-net \
+alpine ping db
+```
+
+# Reto MongoDB y MongoExpress
+## MongoDB
+```
+docker run -d --name mongo \
+  -e MONGO_INITDB_ROOT_USERNAME=admin \
+  -e MONGO_INITDB_ROOT_PASSWORD=secret \
+  --network miapp-net \
+  mongo
+```
+
+## MongoExpress
+```
+docker run -d --name mongo-express \
+  -e ME_CONFIG_MONGODB_ADMINUSERNAME=admin \
+  -e ME_CONFIG_MONGODB_ADMINPASSWORD=secret \
+  -e ME_CONFIG_MONGODB_SERVER=mongo \
+  -p 8081:8081 \
+  --network miapp-net \
+  mongo-express
+```
+
+### Copiar books.json en mongo
+```
+docker cp books.json mongo:/
+```
+
+### Importar books.json
+```
+docker exec -i mongo mongoimport --username admin --password secret --authenticationDatabase admin --db library --collection books --jsonArray --file /books.json
+```
