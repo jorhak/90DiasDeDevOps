@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Lista de Empleados</h1>
+<a href="{{ url_for('add') }}" class="btn btn-primary mb-3">Agregar Nuevo Empleado</a>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Fecha Ingreso</th>
+            <th>Salario</th>
+            <th>Departamento</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for emp in empleados %}
+        <tr>
+            <td>{{ emp.id }}</td>
+            <td>{{ emp.nombre }}</td>
+            <td>{{ emp.apellido }}</td>
+            <td>{{ emp.fecha_ingreso }}</td>
+            <td>{{ emp.salario }}</td>
+            <td>{{ emp.departamento }}</td>
+            <td>
+                <a href="{{ url_for('edit', id=emp.id) }}" class="btn btn-warning btn-sm">Modificar</a>
+                <form action="{{ url_for('delete', id=emp.id) }}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este empleado?');">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

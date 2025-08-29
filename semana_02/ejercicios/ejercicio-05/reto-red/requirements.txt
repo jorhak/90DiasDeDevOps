@@ -1,0 +1,4 @@
+wheel
+Flask
+Flask-MySQLdb
+gunicorn

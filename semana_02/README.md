@@ -576,3 +576,148 @@ docker cp books.json mongo:/
 ```
 docker exec -i mongo mongoimport --username admin --password secret --authenticationDatabase admin --db library --collection books --jsonArray --file /books.json
 ```
+
+# Dia 12/90
+
+## Simple Nginx
+Aqui tube un pequeno problema al momento de mostrar el mensaje ya que no especificaba el formato de caracteres **charset** y esto ocasionaba que se muestre un caracter **Â** que no se encontraba en nuestro codigo por lo que se modifico el codigo.
+
+OLD
+```
+<h1>¡Hola desde mi imagen Docker personalizada!</h1>
+```
+
+NEW
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Mi página Docker</title>
+</head>
+<body>
+  <h1>¡Hola desde mi imagen Docker personalizada!</h1>
+</body>
+</html>
+```
+
+De esta forma ya se se apreciaba el caracter **Â**.
+
+## Hello Node
+De igual forma pasaba algo similar se tubo que agregar codigo para que ya no se viera el caracter **Â**.
+
+OLD
+```
+const http = require('http');
+
+const PORT = process.env.PORT || 3000;
+
+http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('¡Hola desde Docker y Node.js!\n');
+}).listen(PORT);
+
+console.log(`Servidor corriendo en http://localhost:${PORT}`);
+```
+
+NEW
+```
+const http = require('http');
+
+const PORT = process.env.PORT || 3000;
+
+http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain; charset=UTF-8' });
+  res.end('¡Hola desde Docker y Node.js!\n');
+}).listen(PORT);
+
+console.log(`Servidor corriendo en http://localhost:${PORT}`);
+```
+
+De esta forma ya no se aprecia el caracter **Â**.
+
+## Reto
+
+### Requisitos
+Vamos a necesitar librerias de desarrollo de MySQL instaladas para poder compilarse cuando se tengamos que ejecutar **pip install -r requirements.txt**, para ejecuralo en local.
+
+#### Entorno local
+```
+sudo apt-get update
+sudo apt-get install -y default-libmysqlclient-dev build-essential pkg-config python3-dev
+```
+
+#### Enviroment
+Esto solo para entorno local
+```
+python -m venv env
+source env/bin/activate
+python app.py
+```
+
+Aqui nos va dar error ya que la base de datos no esta habilitada.
+Podemos utilizar el comando que vamos a utilizar, sin embargo, no necesitamos de la red ya que lo vamos a exponer de esta forma le vamos a quitar network y le vamos agregar -p 3306:3306.
+
+
+Lo primero que vamos hacer es tener nuestra base de datos vamos a ocupar prueba.sql que esta en ejercicio-04.
+
+#### Crear red
+```
+docker network create conexion
+```
+
+#### Crear volumen
+```
+docker volume create db-maria
+```
+
+#### Crear nuestra DB con MariaDB
+```
+docker run -d --name base-datos-1 \
+--network conexion \
+-v db-maria:/var/lib/mysql:Z \
+-e MARIADB_ROOT_PASSWORD=1234 \
+mariadb:10.6.23-jammy
+
+docker cp ../../ejercicio-04/prueba.sql base-datos-1:/tmp/prueba.sql
+
+docker exec -it base-datos-1 bash
+
+cd /tmp
+
+mysql -u root -p
+
+source /tmp/prueba.sql
+```
+
+#### Nuestra apliacion que nos va mostrar los datos de la base de datos
+Nuestra aplicacion necesita que estemos en la misma red ya que de no estar lo no nos vamos a poder conectar a la base de datos.
+
+##### Crear imagen
+```
+docker build -t empleados:0.1.0 .
+```
+
+##### Ejecutar App
+```
+docker run -d --name app-1 \
+--network conexion \
+-p 5001:5000 \
+empleados:0.1.0
+```
+
+
+## Reto Avanzado
+Vamos a crear una imagen a la cual le vamos a asignar una variable de entorno.
+
+#### Crear imagen
+```
+docker build -t avanzado:0.1.0 .
+```
+
+#### Crear contenedor
+```
+docker run --rm avanzado:0.1.0
+```
+
+

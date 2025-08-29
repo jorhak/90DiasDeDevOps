@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Modificar Empleado</h2>
+<form method="post">
+    <div class="mb-3">
+        <label>Nombre</label>
+        <input type="text" name="nombre" class="form-control" value="{{ empleado.nombre }}" required>
+    </div>
+    <div class="mb-3">
+        <label>Apellido</label>
+        <input type="text" name="apellido" class="form-control" value="{{ empleado.apellido }}" required>
+    </div>
+    <div class="mb-3">
+        <label>Salario</label>
+        <input type="number" step="0.01" name="salario" class="form-control" value="{{ empleado.salario }}" required>
+    </div>
+    <div class="mb-3">
+        <label>Departamento</label>
+        <input type="text" name="departamento" class="form-control" value="{{ empleado.departamento }}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

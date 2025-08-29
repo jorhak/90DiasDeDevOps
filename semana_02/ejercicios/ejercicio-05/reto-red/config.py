@@ -1,0 +1,5 @@
+MYSQL_HOST = 'base-datos-1'
+MYSQL_USER = 'root'
+MYSQL_PASSWORD = '1234'
+MYSQL_DB = 'prueba'
+MYSQL_CURSORCLASS = 'DictCursor'
