@@ -782,9 +782,20 @@ docker compose down && docker compose up -d
 ```
 
 Vamos a insertar datos en la coleccion
+GOOD
 ```
 docker compose exec db mongosh mydb --eval "db.mydb.insertOne({name: 'ejemplo'})"
 ```
+
+Aqui tuve un error el comando que se tenia antes era:
+BAD
+```
+docker compose exec db mongosh --eval "db.mydb.insertOne({name: 'ejemplo'})"
+```
+
+Con este comando estaba insertando en la coleccion por defecto de test y cuando hacia la prueba para ver si se agregaba en la coleccion mydb este no se encontraba, sin embargo, cuando se agrego mydb despues de mongosh esto se soluciono.
+Sino especificamos la base de datos este utiliza la test que esta por defecto.
+Cuando especifique la base de datos mydb ya con eso se soluciono.
 
 #### Probar la API
 Terminal
