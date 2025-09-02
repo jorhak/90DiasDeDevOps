@@ -4,18 +4,18 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - db
-#        condition: service_healthy
+      db:
+        condition: service_healthy
   
   db:
     image: mongo:${MONGODB_VERSION}
     volumes:
       - db_data:/data/db
-#    healthcheck:
-#      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-#      interval: 5s
-#      timeout: 3s
-#      retries: 5
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   frontend:
     image: node:${NODE_VERSION}
