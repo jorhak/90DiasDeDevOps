@@ -2,4 +2,6 @@
 vagrant.log
 *.log
 node_modules/
+wp-content
+package-lock.json
 

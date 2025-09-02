@@ -720,4 +720,87 @@ docker build -t avanzado:0.1.0 .
 docker run --rm avanzado:0.1.0
 ```
 
+# Dia 13
+Vamos a ver **docker compose** para manejar multi-containers, los que en este caso los vamos a ver como servicios.
+
+## WordPress
+Vamos a comenzar con **WordPress** ya que este necesita de una base de datos y va ser algo parecido al lo que vimos anteriormente solo que en esta ocacion lo vamos a tener de forma declarativa y no de forma imperativa.
+
+### Ejecutar docker-compose.yaml
+```
+docker compose up -d
+```
+
+Ahora podemos acceder a **WordPress** desde nuestro navegador y de igual manera a **PHPMYADMIN** para ver la base de datos.
+```
+localhost:8080
+localhost:8081
+```
+
+Aqui tube un pequeno inconveniente que wp-db no se iniciaba asi que tube que ejecutar:
+```
+docker compose restart
+```
+De esta manera los tres servicios ya se estan ejecutando.
+
+### Bajar servicios
+En nuestro caso vamos a bajar los servicios y los volumenes, esto no se debe hacer en produccion para no perder la persistencia de los datos.
+```
+docker compose down #Solo baja los servicios
+docker compose down --volumes #Baja los servicios y elimina los volumenes
+```
+
+### NodeJs y MongoDB
+Debemos ubicarnos en el directorio **node-mongo-app**
+#### Iniciar servicios
+```
+docker compose up --build -d
+```
+
+#### Probar la API
+
+Desde la terminal
+```
+curl http://localhost:3000
+```
+
+Desde el navegador
+```
+http://localhost:3000
+```
+
+#### Verificar la base de datos
+```
+docker compose exec db mongosh --eval "show dbs"
+```
+
+## Persistencia de datos
+Vamos a probar que la persistencia de los datos esta bien configurada.
+Lo que vamos hacer es detener los servicios y volver a levantarlos.
+```
+docker compose down && docker compose up -d
+```
+
+Vamos a insertar datos en la coleccion
+```
+docker compose exec db mongosh mydb --eval "db.mydb.insertOne({name: 'ejemplo'})"
+```
+
+#### Probar la API
+Terminal
+```
+curl http://localhost:3000/api/items
+```
+
+Navegador
+```
+http://localhost:3000/api/items
+http://localhost:5173
+```
+
+Los detenemos y volvemos a levantarlos
+```
+docker compose down && docker compose up -d
+```
+
 
