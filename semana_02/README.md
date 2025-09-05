@@ -860,6 +860,12 @@ EXPOSE 80
 CMD ["python", "app.py"]
 ```
 
+### Modificar app.py
+```
+21 port = os.getenv('APP_PORT', 80)
+283     app.run(host='0.0.0.0', port=port, debug=True, threaded=True)
+```
+
 
 ## Worker Dockerfile
 Agregamos el Dockerfile en la ruta worker/
@@ -871,6 +877,14 @@ RUN npm install
 COPY . .
 EXPOSE 3000
 CMD ["npm", "start"]
+```
+
+### Modificar main.js
+```
+8 const port = process.env.APP_PORT || 3000;
+
+26  host: process.env.REDIS_HOST || null, // Se establecerá dinámicamente
+27  port: process.env.REDIS_PORT || 6379,
 ```
 
 ### Variables de entorno para Worker
