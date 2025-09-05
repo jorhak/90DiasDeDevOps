@@ -720,7 +720,7 @@ docker build -t avanzado:0.1.0 .
 docker run --rm avanzado:0.1.0
 ```
 
-# Dia 13
+# Dia 13/90
 Vamos a ver **docker compose** para manejar multi-containers, los que en este caso los vamos a ver como servicios.
 
 ## WordPress
@@ -814,4 +814,193 @@ Los detenemos y volvemos a levantarlos
 docker compose down && docker compose up -d
 ```
 
+# Dia 14/90
+Vamos a crear un multi-containers para el proyecto de votos.
+Debemos estar ubicados en la ruta *semana_02/ejercicios/ejercicio-07*
 
+## Clonar repositorio
+```
+git clone https://github.com/roxsross/roxs-devops-project90.git
+cd roxs-devops-project90/roxs-voting-app
+```
+
+## Result Dockerfile
+Agregamos el Dockerfile en la ruta result/
+```
+FROM node:22.0.0-alpine3.19
+WORKDIR /result
+COPY package.json .
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+### Variables de entorno para Result
+Agregamos las variables de entorno en result/
+**No es necesario agregar este fichero para Dockerfile ya que las variables de entorno se las vamos a pasar en el docker-compose, sin embargo pordria ser util si lo ejecutas en local**
+.env
+```
+APP_PORT=3000
+DATABESE_HOST=db
+DATABASE_USER=postgres
+DATABASE_PASSWORD=contrasena
+DATABASE_NAME=votos
+```
+
+## Vote Dockerfile
+Agregamos el Dockerfile en la ruta vote/
+```
+FROM python:3.14.0rc2-alpine3.21
+WORKDIR /vote
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 80
+CMD ["python", "app.py"]
+```
+
+
+## Worker Dockerfile
+Agregamos el Dockerfile en la ruta worker/
+```
+FROM node:22.0.0-alpine3.19
+WORKDIR /worker
+COPY package.json .
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+```
+
+### Variables de entorno para Worker
+Agregamos las variables de entorno en la ruta vote/
+**No es necesario agregar este fichero para Dockerfile ya que las variables de entorno se las vamos a pasar en el docker-compose, sin embargo pordria ser util si lo ejecutas en local**
+.env
+```
+DATABASE_HOST=db
+DATABASE_USER=postgres
+DATABASE_PASSWORD=contrasena
+DATABASE_NAME=votos
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
+
+## docker-compose
+Agregamos el docker-compose.yml en la ruta roxs-voting-app
+docker-compose.yml
+```
+services:
+  db:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: vote-postgres
+    environment:
+      - POSTGRES_USER: ${DATABASE_USER}
+      - POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      - POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      postgres_data: /var/lib/postgresql/data
+    networks:
+      - vote-red
+
+  redis:
+    image: redis:${REDIS_VERSION}
+    container_name: vote-redis
+    volumes:
+      redis_data:/data
+    networks:
+      - vote-red
+
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    container_name: vote-worker 
+    environment:
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - APP_PORT=${APP_WORKER_PORT}
+    depends_on:
+      - db
+      - redis
+    networks:
+      - vote-red  
+
+  result:
+    build:
+      context: ./result
+      dockerfile: Dockerfile
+    container_name: vote-result
+    environment:
+      - DATABESE_HOST=${DATABASE_HOST}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - APP_PORT=${APP_RESULT_PORT}
+    ports:
+      - 3000:${APP_RESULT_PORT}
+    depends_on:
+      - db
+      - worker
+    networks:
+      - vote-red
+  
+  vote:
+    build:
+      context: ./vote
+      dockerfile: Dockerfile
+    container_name: vote-app
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+      - OPTION_A=${OPTION_A}
+      - OPTION_B=${OPTION_B}
+      - APP_PORT=${APP_VOTE_PORT}
+    ports:
+      - 80:${APP_VOTE_PORT}
+    depends_on:
+      - worker
+      - result
+    networks:
+      - vote-red
+
+volumes:
+  postgres_data:
+    driver: local
+    name: vote-postgres-data
+  redis_data:
+    driver: local
+    name: vote-redis-data
+
+networks:
+  vote-red:
+    driver: bridge
+    name: vote-network
+```
+
+### Variables de entorno del docker-compose.yml
+**Este fichero si se debe agregar**
+.env
+```
+REDIS_HOST=redis
+OPTION_A= Gatos
+OPTION_B= Perros
+DATABASE_HOST=db
+DATABASE_USER=postgres
+DATABASE_PASSWORD=contrasena
+DATABASE_NAME=votos
+REDIS_VERSION=alpine3.22
+POSTGRES_VERSION=13.22-alpine
+APP_WORKER_PORT=3000
+APP_RESULT_PORT=3000
+APP_VOTE_PORT=80
+REDIS_PORT=6379
+```
+
+## Ejecutar docker-compose.yaml
+```
+docker compose up --build
+```
