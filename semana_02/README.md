@@ -830,7 +830,7 @@ Agregamos el Dockerfile en la ruta result/
 FROM node:22.0.0-alpine3.19
 WORKDIR /result
 COPY package.json .
-RUN npm install
+RUN npm install && apk add --no-cache curl
 COPY . .
 EXPOSE 3000
 CMD ["npm", "start"]
@@ -851,10 +851,11 @@ DATABASE_NAME=votos
 ## Vote Dockerfile
 Agregamos el Dockerfile en la ruta vote/
 ```
-FROM python:3.14.0rc2-alpine3.21
+FROM python:3.12.0-slim
 WORKDIR /vote
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    && apt-get update && apt-get install -y curl
 COPY . .
 EXPOSE 80
 CMD ["python", "app.py"]
@@ -873,7 +874,7 @@ Agregamos el Dockerfile en la ruta worker/
 FROM node:22.0.0-alpine3.19
 WORKDIR /worker
 COPY package.json .
-RUN npm install
+RUN npm install && apk add --no-cache curl
 COPY . .
 EXPOSE 3000
 CMD ["npm", "start"]
