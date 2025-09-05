@@ -895,19 +895,24 @@ services:
     image: postgres:${POSTGRES_VERSION}
     container_name: vote-postgres
     environment:
-      - POSTGRES_USER: ${DATABASE_USER}
-      - POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      - POSTGRES_DB: ${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
     volumes:
-      postgres_data: /var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - vote-red
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:${REDIS_VERSION}
     container_name: vote-redis
     volumes:
-      redis_data:/data
+      - redis_data:/data
     networks:
       - vote-red
 
@@ -915,6 +920,7 @@ services:
     build:
       context: ./worker
       dockerfile: Dockerfile
+    image: worker:${WORKER_VERSION}
     container_name: vote-worker 
     environment:
       - DATABASE_HOST=${DATABASE_HOST}
@@ -925,18 +931,26 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - APP_PORT=${APP_WORKER_PORT}
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
-      - vote-red  
+      - vote-red
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${APP_WORKER_PORT}/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   result:
     build:
       context: ./result
       dockerfile: Dockerfile
+    image: result:${RESULT_VERSION}
     container_name: vote-result
     environment:
-      - DATABESE_HOST=${DATABASE_HOST}
+      - DATABASE_HOST=${DATABASE_HOST}
       - DATABASE_USER=${DATABASE_USER}
       - DATABASE_PASSWORD=${DATABASE_PASSWORD}
       - DATABASE_NAME=${DATABASE_NAME}
@@ -944,28 +958,47 @@ services:
     ports:
       - 3000:${APP_RESULT_PORT}
     depends_on:
-      - db
-      - worker
+      db:
+        condition: service_healthy
+      worker:
+        condition: service_healthy
     networks:
       - vote-red
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${APP_RESULT_PORT}/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   vote:
     build:
       context: ./vote
       dockerfile: Dockerfile
+    image: vote:${VOTE_VERSION}
     container_name: vote-app
     environment:
       - REDIS_HOST=${REDIS_HOST}
       - OPTION_A=${OPTION_A}
       - OPTION_B=${OPTION_B}
       - APP_PORT=${APP_VOTE_PORT}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
     ports:
       - 80:${APP_VOTE_PORT}
     depends_on:
-      - worker
-      - result
+      worker:
+        condition: service_healthy
+      result:
+        condition: service_healthy
     networks:
       - vote-red
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${APP_VOTE_PORT}/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
