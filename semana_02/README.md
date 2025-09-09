@@ -815,7 +815,7 @@ docker compose down && docker compose up -d
 ```
 
 # Dia 14/90
-Vamos a crear un multi-containers para el proyecto de votos.
+Vamos a crear un multi-containers para el proyecto de votos. \
 Debemos estar ubicados en la ruta *semana_02/ejercicios/ejercicio-07*
 
 ## Clonar repositorio
@@ -837,7 +837,7 @@ CMD ["npm", "start"]
 ```
 
 ### Variables de entorno para Result
-Agregamos las variables de entorno en result/
+Agregamos las variables de entorno en result/ \
 **No es necesario agregar este fichero para Dockerfile ya que las variables de entorno se las vamos a pasar en el docker-compose, sin embargo pordria ser util si lo ejecutas en local**
 .env
 ```
@@ -889,7 +889,7 @@ CMD ["npm", "start"]
 ```
 
 ### Variables de entorno para Worker
-Agregamos las variables de entorno en la ruta vote/
+Agregamos las variables de entorno en la ruta vote/ \
 **No es necesario agregar este fichero para Dockerfile ya que las variables de entorno se las vamos a pasar en el docker-compose, sin embargo pordria ser util si lo ejecutas en local**
 .env
 ```
@@ -902,7 +902,7 @@ REDIS_PORT=6379
 ```
 
 ## docker-compose
-Agregamos el docker-compose.yml en la ruta roxs-voting-app
+Agregamos el docker-compose.yml en la ruta roxs-voting-app \
 docker-compose.yml
 ```
 services:
