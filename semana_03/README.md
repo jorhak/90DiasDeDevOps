@@ -39,7 +39,7 @@ touch .github/workflows/basico.yml
 ```
 
 Agregamos las siguientes lineas \
-basico.yml
+basico.yml \
 ```
 name: Workflow basico
 
@@ -68,14 +68,15 @@ jobs:
         cat /etc/passwd
 ```
 
-Ahora debemos agregarlo workspace, luego al stage y finalmente push para que se suba al repositorio remoto y que se ejecute el Pipeline
+Ahora debemos agregarlo workspace, luego al stage y finalmente push para que se suba al repositorio remoto \ 
+y que se ejecute el Pipeline
 ```
 ga .
 gc "Agregando Pipeline basico"
 gp
 ```
 
-Cabe mencionar que utilice alias.
+Cabe mencionar que utilice alias. \
 
 ### Pipeline con variables
 ```
@@ -114,7 +115,8 @@ jobs:
           fi
 ```
 
-Ahora debemos agregarlo workspace, luego al stage y finalmente push para que se suba al repositorio remoto y que se ejecute el Pipeline
+Ahora debemos agregarlo workspace, luego al stage y finalmente push para que se suba al repositorio remoto \ 
+y que se ejecute el Pipeline
 
 ```
 ga .
@@ -126,39 +128,45 @@ gp
 
 #### Requisitos previos
 a) Contar con un webhook en Discord
-   1. Abrimos nuestro Discord, nos dirigimos a la parte inferior izquierda y damos click sobre ➕
+   1. Abrimos nuestro Discord, nos dirigimos a la parte inferior izquierda y damos click sobre ➕ \
    ![Get started](./dia15/webhookDiscord.png)
-   2. Damos click sobre Create My Own
+   2. Damos click sobre Create My Own. \
    ![Get started](./dia15/webhookDiscord1.png)
-   3. Elegimos para quien va ser el Server, damos click sobre For me and my friends.
+   3. Elegimos para quien va ser el Server, damos click sobre For me and my friends. \
    ![Get started](./dia15/webhookDiscord2.png)
-   4. Le asignamos un nombre y damos click en Create
+   4. Le asignamos un nombre y damos click en Create. \
    ![Get started](./dia15/webhookDiscord3.png)
-   5. Una ves se cree nuestro Server damos click sobre Prueba y en la parte superior izquierda del canal general damos click sobre ⚙️ 
+   5. Una ves se cree nuestro Server damos click sobre Prueba y en la parte superior izquierda del canal \
+   general damos click sobre ⚙️ \
    ![Get started](./dia15/webhookDiscord4.png)
-   6. Nos vamos a Integration y luego damos click sobre Create Webhook
+   6. Nos vamos a Integration y luego damos click sobre Create Webhook \
    ![Get started](./dia15/webhookDiscord5.png)
-   7. Damos click en Create Webhook
+   7. Damos click en Create Webhook. \
    ![Get started](./dia15/webhookDiscord6.png)
-   8. Ya tenemos nuestro Webhook creado lo que debemos hacer es copiar la URL del webhook que va ser nuestro **secrets** en GitHub.
+   8. Ya tenemos nuestro Webhook creado lo que debemos hacer es copiar la URL del webhook que va ser nuestro \
+   **secrets** en GitHub. \
    ![Get started](./dia15/webhookDiscord7.png)
-b) Contar con un webhook en Slack
-   Antes debemos crearnos un WorkSpace.
-   1. Para comenzar nos dirigimos a [API Slack](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/). Damos click en Create an app.
+b) Contar con un webhook en Slack \
+   Antes debemos crearnos un WorkSpace. \
+   1. Para comenzar nos dirigimos a [API Slack](https://docs.slack.dev/messaging/ \
+   sending-messages-using-incoming-webhooks/). Damos click en Create an app. \
    ![Get started](./dia15/webhookSlack.png)
-   2. Se nos va abrir otra pestana y damos click en Create an App
+   2. Se nos va abrir otra pestana y damos click en Create an App. \
    ![dh](./dia15/webhookSlack1.png)
-   3. Nos va pedir elegir si usamos un manifiesto o si lo queremos desde cero, vamos a dar click sobre From scratch
+   3. Nos va pedir elegir si usamos un manifiesto o si lo queremos desde cero, vamos a dar click sobre \
+   From scratch
    ![dh](./dia15/webhookSlack2.png)
-   4. Le asignamos un nombre, elegimos el workspace y finalmente damos click en Create App
+   4. Le asignamos un nombre, elegimos el workspace y finalmente damos click en Create App. \
    ![dh](./dia15/webhookSlack3.png)
-   5. Cuando se nos cree la aplicacion nos vamos a la parte superior izquierda y damos click sobre Incoming Webhooks
+   5. Cuando se nos cree la aplicacion nos vamos a la parte superior izquierda y damos click sobre \
+   Incoming Webhooks
    ![dh](./dia15/webhookSlack4.png)
-   6. Habilitamos Incoming webhook
+   6. Habilitamos Incoming webhook. \
    ![dh](./dia15/webhookSlack5.png)
-   7. Vamos agregar un nuevo webhook
+   7. Vamos agregar un nuevo webhook. \
    ![dh](./dia15/webhookSlack6.png)
-   8. Ya tenemos nuestro Webhook creado lo que debemos hacer es copiar la URL del webhook que va ser nuestro **secrets** en GitHub.
+   8. Ya tenemos nuestro Webhook creado lo que debemos hacer es copiar la URL del webhook que va ser \
+   nuestro **secrets** en GitHub.
    ![dh](./dia15/webhookSlack8.png)
 
 
@@ -201,7 +209,8 @@ jobs:
           curl -X POST -H 'Content-type: application/json' --data '{"text":"Nuevo commit de ${{ github.event.head_commit.author.name }}: commit: ${{ github.event.head_commit.message }}"}' ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
 
-Ahora debemos agregarlo al workspace, luego al stage y finalmente push para que se suba al repositorio remoto y que se ejecute el Pipeline
+Ahora debemos agregarlo al workspace, luego al stage y finalmente push para que se suba al repositorio \
+remoto y que se ejecute el Pipeline
 
 ```
 ga .
