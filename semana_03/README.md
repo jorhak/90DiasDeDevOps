@@ -146,11 +146,10 @@ a) Contar con un webhook en Discord
    8. Ya tenemos nuestro Webhook creado lo que debemos hacer es copiar la URL del webhook que va ser nuestro \
    **secrets** en GitHub. \
    ![Get started](./dia15/webhookDiscord7.png)
-   
+
 b) Contar con un webhook en Slack \
-   Antes debemos crearnos un WorkSpace. \
-   1. Para comenzar nos dirigimos a [API Slack](https://docs.slack.dev/messaging/ \
-   sending-messages-using-incoming-webhooks/). Damos click en Create an app. \
+   Antes debemos crearnos un WorkSpace.
+   1. Para comenzar nos dirigimos a [API Slack](https://docs.slack.dev/messaging/sending-messages-using-incoming-webhooks/). Damos click en Create an app. \
    ![Get started](./dia15/webhookSlack.png)
    2. Se nos va abrir otra pestana y damos click en Create an App. \
    ![dh](./dia15/webhookSlack1.png)
