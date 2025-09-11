@@ -153,8 +153,8 @@ b) Contar con un webhook en Slack \
    ![Get started](./dia15/webhookSlack.png)
    2. Se nos va abrir otra pestana y damos click en Create an App. \
    ![dh](./dia15/webhookSlack1.png)
-   3. Nos va pedir elegir si usamos un manifiesto o si lo queremos desde cero, vamos a dar click \ 
-   sobre From scratch
+   3. Nos va pedir elegir si usamos un manifiesto o si lo queremos desde cero, vamos a dar click
+   sobre From scratch. \
    ![dh](./dia15/webhookSlack2.png)
    4. Le asignamos un nombre, elegimos el workspace y finalmente damos click en Create App. \
    ![dh](./dia15/webhookSlack3.png)
