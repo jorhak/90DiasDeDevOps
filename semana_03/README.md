@@ -158,8 +158,7 @@ b) Contar con un webhook en Slack \
    ![dh](./dia15/webhookSlack2.png)
    4. Le asignamos un nombre, elegimos el workspace y finalmente damos click en Create App. \
    ![dh](./dia15/webhookSlack3.png)
-   5. Cuando se nos cree la aplicacion nos vamos a la parte superior izquierda y damos click sobre \
-   Incoming Webhooks. \
+   5. Cuando se nos cree la aplicacion nos vamos a la parte superior izquierda y damos click sobre Incoming Webhooks. \
    ![dh](./dia15/webhookSlack4.png)
    6. Habilitamos Incoming webhook. \
    ![dh](./dia15/webhookSlack5.png)
