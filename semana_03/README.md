@@ -226,3 +226,9 @@ git push origin develop
 
 Ahora segun la rama se ejecuta la notificacion que para main va a Discord y para develop y feature va a Slack.
 
+# Dia 16/90
+No llegaba a importar el modulo "app". Esto se debe a que al momento de ejecutar **pytest** este busca tests/ \
+y este no sabe que debe "subir un nivel".
+Lo que vamos hacer sera crear un fichero dentro de tests/__init__.py para que este directorio se reconosca como un paquete del cual pueden importar modulos.
+Tuvimos un problema con los response ya que no imprimia el caracter "¡" sino que imprimia "\u00a1" por lo que \
+un test no llega a pasar.

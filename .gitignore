@@ -6,3 +6,8 @@ wp-content
 package-lock.json
 roxs-devops-project90/
 mi-primer-ci-cd/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+
