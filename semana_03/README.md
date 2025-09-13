@@ -232,3 +232,20 @@ y este no sabe que debe "subir un nivel".
 Lo que vamos hacer sera crear un fichero dentro de tests/__init__.py para que este directorio se reconosca como un paquete del cual pueden importar modulos.
 Tuvimos un problema con los response ya que no imprimia el caracter "¡" sino que imprimia "\u00a1" por lo que \
 un test no llega a pasar.
+
+Aqui cometi un error, bueno no se si fue un error pero lo estaba subiendo todo al repositorio de 90DiasDeDevOps.
+Asi que me cree otro para subir mi-app-python/ a otro repositorio.
+Cree el repositorio con **gh** como cree el repositorio en el dia 15. Aqui le agrege .gitignore por lo cual ya tenia un commit.
+Ahora lo que tengo que hacer es lo que ya tengo inicializar repositorio y agregarlo al que acabo de crear. \
+Lo que tenia que hacer era que el contenido del repositorio remoto este en mi respositorio local y para ello \
+se ejecutar los siguientes comandos.
+
+```
+git init 
+git remote add origin git@github.com:jorhak/mi-app-python.git
+git pull origin main
+ga .
+gc " Build y Test basico"
+gp
+git push --set-upstream origin main
+```
