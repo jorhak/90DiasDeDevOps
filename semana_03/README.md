@@ -599,7 +599,44 @@ git clone https://github.com/jorhak/retoFlask.git
 cd retoFlask
 ```
 
-Y ejecutamos los comandos previos **Probar tests y codigo en locall**.
+Y ejecutamos los comandos previos **Probar tests y codigo en local**.
 
 ## GitHub Actions
+```
+mkdir -p .github/workflows
+touch .github/workflows/ci-python.yml
+```
+
+```
+name: Mi Pipeline con matrix
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-con-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9']
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: ${{matrix.python-version}}
+
+    - run: pip install -r requirements.txt
+    - run: pytest
+
+    - name: Fetch Postman Collection
+      uses: stcalica/postman-publish-action@master
+        with:
+          postman_api_key: ${{ secrets.POSTMAN_KEY }}
+          collection_id: ${{ vars.COLLECTION_ID }}
+```
 
