@@ -640,3 +640,45 @@ jobs:
           collection_id: ${{ vars.COLLECTION_ID }}
 ```
 
+# Dia 17/90
+Vamos a crear una imagen de nuestra app. \
+Para llevar a cabo estas accion vamos a utilizar:
+```
+git clone https://github.com/jorhak/retoFlask.git
+cd retoFlask
+touch Dockerfile
+```
+
+## Crear Dockerfile
+```
+FROM python:3.8.20-slim-bullseye
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . /app
+RUN apt update && apt install -y curl && \
+    adduser --disabled-password --gecos '' appuser && \
+    chown -R appuser:appuser /app 
+    
+
+USER appuser
+EXPOSE 5000
+
+CMD ["python", "src/app.py"]
+```
+
+## Crear imagen
+```
+docker buildx build --platform linux/amd64 -t reto_flask:v1.0.0 .
+```
+
+## Probar imagen
+```
+docker run -d -p 3366:5000 --name reto_flask reto_flask:v1.0.0
+```
+
+### Probar los endpoints
+Para ello vamos a utilzar Postman, como ya los tenemos los \
+endpoints solo vamos a cambiar la IP de nuestro equipo y el \
+puerto que se cambio de localhost:5000 a IP:3366.
+
