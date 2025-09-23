@@ -12,3 +12,4 @@ __pycache__/
 .pytest_cache/
 mi-app-python/
 retoFlask/
+actions-runner/
