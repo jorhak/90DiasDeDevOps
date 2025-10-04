@@ -682,3 +682,293 @@ Para ello vamos a utilzar Postman, como ya los tenemos los \
 endpoints solo vamos a cambiar la IP de nuestro equipo y el \
 puerto que se cambio de localhost:5000 a IP:3366.
 
+# Dia 18/90
+Configure mi equino como un Runner siguiendo las instrucciones de la pagina web. Todas las pruebas las realice en el repositorio _retoFlask_.
+
+# Dia 19/90
+Este reto lo hice con un proyecto hecho en la universidad con mis companeros, que consta de:
+- Dos backends
+  1. Login
+     - Registro de doctores
+     - Registro de pacientes
+     - etc.
+
+        Las tecnologias que se utilizaron son:
+          - NodeJs
+          - MongoDB
+          - AWS Recognition
+          - Cloudinary
+
+  2. Hospital
+     - Consultas
+     - Medicamentos
+     - Recetas
+     - etc.
+
+        Las tecnologias que se utilizaron son:
+          - Framework Flight de PHP
+          - PostgreSQL
+          - Composer
+- Frontend
+  Solo consumia los endpoints de los backend y esta hecho con PHP puro.
+
+## Crear directorio
+```
+mkdir projects
+cd projects
+```
+
+## Clonar repositorios
+```
+git clone https://github.com/jorhak/microservicio1.git
+git clone https://github.com/jorhak/ms_bi.git
+git clone https://github.com/jorhak/hospital.git
+```
+
+## Crear repositorio con gh
+El nombre del repositorio debe ser **reto19**. El repositorio de estar en blanco.
+```
+gh repo create
+```
+
+```
+? What would you like to do? Create a new repository on github.com from scratch
+? Repository name reto19
+? Description Desplegar app con docker compose y Runner self-hosted
+? Visibility Public
+? Would you like to add a README file? No
+? Would you like to add a .gitignore? No
+? Would you like to add a license? No
+? This will create "reto19" as a public repository on github.com. Continue? Yes
+✓ Created repository jorhak/reto19 on github.com
+  https://github.com/jorhak/reto19
+? Clone the new repository locally? No
+```
+
+## Iniciar repositorio
+```
+git init
+```
+
+### Agregar repositorio remoto
+```
+git branch -M main
+git remote add origin git@github.com:jorhak/reto19.git
+```
+
+### Crear .gitignore
+```
+vi .gitignore
+```
+
+```
+hospital/
+microservicio1/
+ms_bi/
+```
+
+## Crear docker compose
+```
+vi develop.yml
+```
+
+```
+services:
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: microservicio2
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_AUTHENTICATION_DATABASE: admin
+    ports:
+    - 27017:27017
+    volumes:
+    - mongodb_data:/data/db
+    networks:
+    - app-microservicio
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    ports:
+    - 8081:8081
+    depends_on:
+    - mongodb
+    networks:
+    - app-microservicio
+
+  microservicio1:
+    build:
+      context: ./microservicio1
+      dockerfile: Dockerfile
+    container_name: microservicio1
+    restart: always
+    environment:
+      MONGODB_URI: 'mongodb://mongodb:27017/microservicio2?authSource=admin'
+      MONGODB_USER: admin
+      MONGODB_PASSWORD: password
+    ports:
+    - 3000:3000
+    depends_on:
+    - mongodb
+    networks:
+    - app-microservicio
+
+  app:
+    build:
+      context: ./ms_bi
+      dockerfile: Dockerfile
+    container_name: ms_bi
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=db_hospitalbi
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    depends_on:
+      - db
+    networks:
+    - app-msbi 
+
+  db :
+    image: postgres
+    container_name: dbpostgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db_hospitalbi
+    volumes:
+      - datapg:/var/lib/postgresql/data
+      - ./db_hospitalbi.sql:/docker-entrypoint-initdb.d/db_hospitalbi.sql
+    ports:
+      - 5432:5432
+    networks:
+    - app-msbi
+
+  frontend:
+    build:
+      context: ./hospital
+      dockerfile: Dockerfile
+    container_name: hopsital-frontend
+    restart: always
+    ports:
+      - 8090:80
+    depends_on:
+      - microservicio1
+      - app
+
+networks:
+  app-microservicio:
+    driver: bridge
+    name: net-microservicio
+  app-msbi:
+    driver: bridge
+    name: net-msbi
+
+volumes:
+  mongodb_data:
+  datapg:
+```
+
+## Crear Workflow
+```
+mkdir -p .github/workflows
+vi .github/workflows/reto19.yml
+```
+
+```
+name: Build Docker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  levantar-app:
+    runs-on: self-hosted
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Iniciar aplicacion
+      run: |
+        docker compose -f develop up -d --build
+    
+    - name: Verificar containers
+      run: |
+        sleep 10
+        docker compose -f develop ps
+    
+    - name: estado de hospital
+      run: |
+        docker compose -f develop log hospital-frontend
+
+    - name: estado de microservicio1
+      run: |
+        docker compose -f develop log microservicio1
+    
+    - name: estado de ms_bi
+      run |
+        docker compose -f develop log ms_bi
+```
+
+## Crear Runner para el proyecto
+Debemos seguir los paso que se menciona en la pagina web [90 dias de DevOps](https://90daysdevops.295devops.com/semana-03/dia18)
+
+## Guardar cambios
+Una ves tengamos configurado nuesto Runner self-hosted procedemos a subir nuestro codigo al repositorio remoto.
+```
+ga .
+gc "Prueba de despliegue de docker compose con Runner self-hosted"
+gp --set-upstream origin main
+```
+
+## Crear Makefile (Opcional)
+```
+PROJECTS := $(shell docker images | grep projects | awk '{print $$3}')
+
+.PHONY: help dev staging prod down-dev list-dev delete-image
+help: ## Mostrar esta ayuda
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+dev: ## Desplegar el entorno de desarrollo
+	docker compose -f develop.yml up -d --build
+
+staging: ## Desplegar el entorno de staging
+	docker compose -f staging.yml up -d --build
+
+prod: ## Desplegar el entorno de producción
+	docker compose -f prod.yml up -d --build
+
+down-dev: ## Derribar todos los entornos
+	docker compose -f develop.yml down
+
+list-dev: ## Listar contenedores del entorno de desarrollo
+	docker compose -f develop.yml ps
+
+delete-image: ## Eliminar imágenes de proyectos
+	@if [ -z "$(PROJECTS)" ]; then \
+		echo "No hay imágenes de proyectos para eliminar."; \
+	else \
+		docker rmi -f $(PROJECTS); \
+	fi
+	@
+```
